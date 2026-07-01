@@ -29,7 +29,24 @@ module "network" {
       private_ip_google_access = true
     }
   }
+
+  routers = {
+    router_1 = {
+      name   = "${local.name_prefix}-router-1"
+      region = var.region
+    }
+  }
+
+  router_nats = {
+    router_nat_1 = {
+      name   = "${local.name_prefix}-router-nat-1"
+      router = "router_1"
+    }
+  }
+
+
 }
+
 
 module "firewall" {
   source  = "../../modules/firewall"

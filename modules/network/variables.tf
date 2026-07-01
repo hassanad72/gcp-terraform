@@ -24,3 +24,22 @@ variable "delete_default_routes" {
   type    = bool
   default = false
 }
+
+variable "routers" {
+  description = "Routers to create, keyed by a stable logical identifier"
+  type = map(object({
+    name   = string
+    region = string
+  }))
+  default = {}
+
+}
+
+variable "router_nats" {
+  description = "Router NATs to create, keyed by a stable logical identifier"
+  type = map(object({
+    name   = string
+    router = string
+  }))
+  default = {}
+}

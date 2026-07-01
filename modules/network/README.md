@@ -24,6 +24,20 @@ module "network" {
       private_ip_google_access = true
     }
   }
+
+  routers = {
+    primary = {
+      name   = "example-dev-router"
+      region = "us-central1"
+    }
+  }
+
+  router_nats = {
+    primary = {
+      name   = "example-dev-nat"
+      router = "primary"
+    }
+  }
 }
 ```
 
@@ -35,6 +49,8 @@ module "network" {
 | `subnets` | Subnets keyed by a stable logical name | `map(object)` | Yes | — |
 | `routing_mode` | VPC routing mode | `string` | No | `REGIONAL` |
 | `delete_default_routes` | Delete automatically created default routes | `bool` | No | `false` |
+| `routers` | Cloud Routers keyed by a stable logical name | `map(object)` | No | `{}` |
+| `router_nats` | Cloud NAT gateways keyed by a stable logical name | `map(object)` | No | `{}` |
 
 ## Outputs
 
@@ -51,5 +67,7 @@ module "network" {
 - Automatic subnet creation is disabled.
 - CIDR ranges and regions are configured independently for each subnet.
 - Private Google Access can be enabled per subnet.
+- Cloud NAT uses automatically allocated IP addresses and logs errors.
+- Each configured NAT gateway serves all subnet IP ranges in its region.
 - Deleting default routes requires replacement routing before workloads need
   outbound connectivity.
