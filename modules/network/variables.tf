@@ -25,21 +25,18 @@ variable "delete_default_routes" {
   default = false
 }
 
-variable "routers" {
-  description = "Routers to create, keyed by a stable logical identifier"
-  type = map(object({
+variable "router" {
+  description = "Cloud Router to create"
+  type = object({
     name   = string
     region = string
-  }))
-  default = {}
-
+  })
 }
 
-variable "router_nats" {
-  description = "Router NATs to create, keyed by a stable logical identifier"
-  type = map(object({
-    name   = string
-    router = string
-  }))
-  default = {}
+variable "router_nat" {
+  description = "Cloud NAT gateway to create"
+  type = object({
+    name        = string
+    subnet_keys = optional(set(string), [])
+  })
 }

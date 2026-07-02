@@ -6,6 +6,7 @@ variable "network" {
 variable "rules" {
   description = "Firewall rules keyed by their GCP rule name"
   type = map(object({
+    name               = string
     direction          = string
     priority           = number
     source_ranges      = optional(list(string), [])

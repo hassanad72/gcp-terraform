@@ -17,6 +17,16 @@ module "network" {
       private_ip_google_access = true
     }
   }
+
+  router = {
+    name   = "${local.name_prefix}-router"
+    region = var.region
+  }
+
+  router_nat = {
+    name        = "${local.name_prefix}-nat"
+    subnet_keys = ["application"]
+  }
 }
 
 module "firewall" {
@@ -24,7 +34,8 @@ module "firewall" {
   network = module.network.network_name
 
   rules = {
-    "${local.name_prefix}-allow-ssh-iap" = {
+    allow_ssh_iap = {
+      name          = "${local.name_prefix}-allow-ssh-iap"
       direction     = "INGRESS"
       priority      = 1000
       source_ranges = ["35.235.240.0/20"]

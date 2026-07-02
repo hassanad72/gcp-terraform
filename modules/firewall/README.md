@@ -16,6 +16,7 @@ module "firewall" {
 
   rules = {
     allow_ssh_iap = {
+      name          = "example-allow-ssh-iap"
       direction     = "INGRESS"
       priority      = 1000
       source_ranges = ["35.235.240.0/20"]
@@ -32,17 +33,17 @@ module "firewall" {
 | Name | Description | Type | Required |
 | --- | --- | --- | --- |
 | `network` | VPC network ID or self-link | `string` | Yes |
-| `rules` | Firewall rules keyed by rule name | `map(object)` | Yes |
+| `rules` | Firewall rules keyed by a stable logical identifier | `map(object)` | Yes |
 
-Each rule supports direction, priority, source or destination ranges, protocol,
-ports, target tags, and optional logging settings.
+Each rule supports a GCP rule name, direction, priority, source or destination
+ranges, protocol, ports, target tags, and optional logging settings.
 
 ## Outputs
 
 | Name | Description |
 | --- | --- |
-| `firewall_rule_names` | Names of the created firewall rules |
-| `firewall_rule_ids` | Firewall rule IDs keyed by rule name |
+| `firewall_rule_names` | Firewall rule names keyed by logical identifier |
+| `firewall_rule_ids` | Firewall rule IDs keyed by logical identifier |
 
 ## Guardrails
 

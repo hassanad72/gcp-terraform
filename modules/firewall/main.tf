@@ -1,7 +1,7 @@
 resource "google_compute_firewall" "rules" {
   for_each = var.rules
 
-  name    = each.key
+  name    = each.value.name
   network = var.network
 
   priority           = each.value.priority

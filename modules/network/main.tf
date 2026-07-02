@@ -17,21 +17,26 @@ resource "google_compute_subnetwork" "ps_subnet" {
 }
 
 resource "google_compute_router" "ps_router" {
-  for_each = var.routers
-
-  name    = each.value.name
-  region  = each.value.region
+  name    = var.router.name
+  region  = var.router.region
   network = google_compute_network.ps_network.id
 }
 
 resource "google_compute_router_nat" "ps_router_nat" {
-  for_each = var.router_nats
-
-  name                               = each.value.name
-  router                             = google_compute_router.ps_router[each.value.router].name
-  region                             = google_compute_router.ps_router[each.value.router].region
+  name                               = var.router_nat.name
+  router                             = google_compute_router.ps_router.name
+  region                             = google_compute_router.ps_router.region
   nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+  source_subnetwork_ip_ranges_to_nat = length(var.router_nat.subnet_keys) == 0 ? "ALL_SUBNETWORKS_ALL_IP_RANGES" : "LIST_OF_SUBNETWORKS"
+
+  dynamic "subnetwork" {
+    for_each = var.router_nat.subnet_keys
+
+    content {
+      name                    = google_compute_subnetwork.ps_subnet[subnetwork.value].id
+      source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+    }
+  }
 
   log_config {
     enable = true

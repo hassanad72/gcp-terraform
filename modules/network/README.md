@@ -25,18 +25,14 @@ module "network" {
     }
   }
 
-  routers = {
-    primary = {
-      name   = "example-dev-router"
-      region = "us-central1"
-    }
+  router = {
+    name   = "example-dev-router"
+    region = "us-central1"
   }
 
-  router_nats = {
-    primary = {
-      name   = "example-dev-nat"
-      router = "primary"
-    }
+  router_nat = {
+    name        = "example-dev-nat"
+    subnet_keys = ["application"]
   }
 }
 ```
@@ -49,8 +45,8 @@ module "network" {
 | `subnets` | Subnets keyed by a stable logical name | `map(object)` | Yes | — |
 | `routing_mode` | VPC routing mode | `string` | No | `REGIONAL` |
 | `delete_default_routes` | Delete automatically created default routes | `bool` | No | `false` |
-| `routers` | Cloud Routers keyed by a stable logical name | `map(object)` | No | `{}` |
-| `router_nats` | Cloud NAT gateways keyed by a stable logical name | `map(object)` | No | `{}` |
+| `router` | Regional Cloud Router configuration | `object` | Yes | — |
+| `router_nat` | Cloud NAT gateway configuration | `object` | Yes | — |
 
 ## Outputs
 
@@ -61,6 +57,10 @@ module "network" {
 | `network_self_link` | VPC network self-link |
 | `subnet_ids` | Subnet IDs keyed by logical name |
 | `subnet_names` | Subnet names keyed by logical name |
+| `router_id` | Cloud Router ID |
+| `router_name` | Cloud Router name |
+| `router_nat_id` | Cloud NAT gateway ID |
+| `router_nat_name` | Cloud NAT gateway name |
 
 ## Network Notes
 
@@ -68,6 +68,7 @@ module "network" {
 - CIDR ranges and regions are configured independently for each subnet.
 - Private Google Access can be enabled per subnet.
 - Cloud NAT uses automatically allocated IP addresses and logs errors.
-- Each configured NAT gateway serves all subnet IP ranges in its region.
+- Set `subnet_keys` to NAT only selected subnets. When omitted, the NAT gateway
+  serves all subnet IP ranges in its region.
 - Deleting default routes requires replacement routing before workloads need
   outbound connectivity.

@@ -30,21 +30,15 @@ module "network" {
     }
   }
 
-  routers = {
-    router_1 = {
-      name   = "${local.name_prefix}-router-1"
-      region = var.region
-    }
+  router = {
+    name   = "${local.name_prefix}-router-1"
+    region = var.region
   }
 
-  router_nats = {
-    router_nat_1 = {
-      name   = "${local.name_prefix}-router-nat-1"
-      router = "router_1"
-    }
+  router_nat = {
+    name        = "${local.name_prefix}-router-nat-1"
+    subnet_keys = ["subnet_1", "subnet_3"]
   }
-
-
 }
 
 
@@ -53,7 +47,8 @@ module "firewall" {
   network = module.network.network_name
 
   rules = {
-    "${local.name_prefix}-allow-ssh-iap" = {
+    allow-ssh-iap = {
+      name          = "${local.name_prefix}-allow-ssh-iap"
       direction     = "INGRESS"
       priority      = 1000
       source_ranges = ["35.235.240.0/20"]
@@ -62,7 +57,8 @@ module "firewall" {
       target_tags   = ["ssh"]
     }
 
-    "${local.name_prefix}-allow-web" = {
+    allow-web = {
+      name          = "${local.name_prefix}-allow-web"
       direction     = "INGRESS"
       priority      = 1000
       source_ranges = ["0.0.0.0/0"]
@@ -71,6 +67,7 @@ module "firewall" {
       target_tags   = ["web"]
     }
   }
+
 }
 
 module "iam" {
